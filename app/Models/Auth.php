@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Auth extends Model
 {
-    public $table = "user"; 
-    private $hidden =[''];
+    public $table = "auth"; 
+
+    const CREATED_AT = 'create_time';
+    const UPDATED_AT = 'update_time';
+    protected $fillable =['username','token'];
 }
