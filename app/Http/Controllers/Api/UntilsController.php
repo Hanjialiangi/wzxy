@@ -41,4 +41,44 @@ class UntilsController extends Controller{
         $ip = $request->input("ip");
         return $this->untilsRepository->searchIp($ip);
     }
+
+    //发送短信
+    public function sendMessage(Request $request)
+    {
+        if(!$request->has('content')){
+            return '请输入短信模板';
+        }
+        if(!$request->has('mobile')){
+            return '请输入电话号码';
+        }
+        $content = $request->input("content");
+        $mobile = $request->input("mobile");
+        return $this->untilsRepository->sendMessage($content,$mobile);
+    }
+
+    //算命
+    public function calculate(Request $request)
+    {
+        if(!$request->has("birth"))
+        {
+            return "请输入出生日期";
+        }
+        if(!$request->has('first_name'))
+        {
+            return "请输入姓";
+        }
+        if(!$request->has("gender"))
+        {
+            return "请输入性别";
+        }
+        if(!$request->has("last_name"))
+        {
+            return "请输入名";
+        }
+        $birth = $request->input("birth");
+        $firstName = $request->input("first_name");
+        $gender = $request->input("gender");
+        $lastName = $request->input("last_name");
+        return $this->untilsRepository->calculate($birth,$firstName,$gender,$lastName);
+    }
 }

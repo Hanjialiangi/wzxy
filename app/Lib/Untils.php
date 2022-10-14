@@ -5,7 +5,7 @@ namespace App\Lib;
 class Untils
 {
 
-    public function searchExpress(string $expressNo,string $type)
+    public function searchExpress(string $expressNo, string $type)
     {
         $host = "https://wuliu.market.alicloudapi.com"; //api访问链接
         $path = "/kdi"; //API访问后缀
@@ -13,7 +13,7 @@ class Untils
         $appcode = "0a577d45939c4b36a770b579e1d50a09"; //开通服务后 买家中心-查看AppCode
         $headers = array();
         array_push($headers, "Authorization:APPCODE " . $appcode);
-        $querys = "no=".$expressNo.'&type='.$type;  //参数写在这里
+        $querys = "no=" . $expressNo . '&type=' . $type;  //参数写在这里
         $url = $host . $path . "?" . $querys;
 
         $curl = curl_init();
@@ -66,16 +66,52 @@ class Untils
         }
     }
 
-    public function searchIp(string $ip){
+    public function searchIp(string $ip)
+    {
         $host = "https://api01.aliyun.venuscn.com";
         $path = "/ip";
         $method = "GET";
         $appcode = "0a577d45939c4b36a770b579e1d50a09";
         $headers = array();
         array_push($headers, "Authorization:APPCODE " . $appcode);
-        $querys = "ip=".$ip;
+        $querys = "ip=" . $ip;
         $bodys = "";
         $url = $host . $path . "?" . $querys;
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_FAILONERROR, false);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HEADER, true);
+        if (1 == strpos("$" . $host, "https://")) {
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        }
+        $out_put = curl_exec($curl);
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+        list($header, $body) = explode("\r\n\r\n", $out_put, 2);
+        return json_decode($body);
+    }
+
+    /**
+     * 发送短息
+     */
+    public function sendMessage(string $content, string $mobile)
+    {
+        $host = "https://dfsns.market.alicloudapi.com";
+        $path = "/data/send_sms";
+        $method = "POST";
+        $appcode = "0a577d45939c4b36a770b579e1d50a09";
+        $headers = array();
+        array_push($headers, "Authorization:APPCODE " . $appcode);
+        //根据API的要求，定义相对应的Content-Type
+        array_push($headers, "Content-Type".":"."application/x-www-form-urlencoded; charset=UTF-8");
+        $querys = "";
+        $bodys = "content=code%3A".$content."&phone_number=".$mobile."&template_id=TPL_0000";
+        $url = $host . $path;
     
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
@@ -89,10 +125,61 @@ class Untils
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         }
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $bodys);
         $out_put = curl_exec($curl);
         $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
         list($header, $body) = explode("\r\n\r\n", $out_put, 2);
         return json_decode($body);
+    }
+
+    /**
+     * 算命
+     */
+    public function calculate(string $birth,string $firstName,string $gender,string $lastName)
+    {
+        $host = "https://xuanxue.market.alicloudapi.com";
+        $path = "/ai_china_knowledge/bazi/v1";
+        $method = "GET";
+        //阿里云APPCODE
+        $appcode = "0a577d45939c4b36a770b579e1d50a09";
+        $headers = array();
+        array_push($headers, "Authorization:APPCODE " . $appcode);
+        array_push($headers, "Content-Type:application/json; charset=utf-8");
+        
+        $querys = "";
+        $bodys = "";
+        $url = $host . $path;
+            
+        //参数配置
+        $parameter=array(
+            "FIRST_NAME" => $firstName,
+            "SECOND_NAME" => $lastName,
+            "BIRTH" => $birth,
+            "GENDER" => $gender
+        );
+
+        foreach($parameter as $key=>$value)
+        {
+            $querys .= $key . "=" . $value . "&";
+        }
+        $querys = substr($querys,0,-1);
+        $url .= "?" . $querys;
+        var_dump($url);
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_FAILONERROR, false);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        //curl_setopt($curl, CURLOPT_HEADER, true);
+        if (1 == strpos("$".$host, "https://"))
+        {
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        }
+        $out_put = curl_exec($curl);
+    
+        return json_decode($out_put);
     }
 }

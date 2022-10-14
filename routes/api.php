@@ -22,4 +22,6 @@ $api->version('v1', ['namespace' => ''], function ($api) {
     $api->post('/login', [AuthController::class, 'login']); //登陆
     $api->post('/search/express', [UntilsController::class, 'searchExpress']); //查询快递
     $api->get('/search/ip', [UntilsController::class, 'searchIp']); //查询ip
+    $api->get('/send/message',[UntilsController::class,'sendMessage']); //发送短信
+    $api->get('/calculate',[UntilsController::class,'calculate']);//算命
 });

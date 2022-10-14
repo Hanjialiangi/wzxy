@@ -95,4 +95,24 @@ class UntilsRepository extends BaseRepository
         }
         return $ip;
     }
+
+    /**
+     * 发送短信
+     */
+    public function sendMessage(string $content,string $mobile)
+    {
+        $untils = new Untils();
+        $result = $untils->sendMessage($content,$mobile);
+        return $result;
+    }
+
+    /**
+     * 算命
+     */
+    public function calculate(string $birth,string $firstName,string $gender,string $lastName)
+    {
+        $untils = new Untils();
+        $result = $untils->calculate($birth,$firstName,$gender,$lastName);
+        return $result;
+    }
 }
