@@ -5,6 +5,7 @@ namespace App\Repositories;
 use Czim\Repository\BaseRepository;
 use App\Lib\Untils;
 use App\Models\Express;
+use App\Models\Ip;
 
 class UntilsRepository extends BaseRepository
 {
@@ -60,5 +61,38 @@ class UntilsRepository extends BaseRepository
             }
         }
         return $result;
+    }
+
+    /**
+     * 查询ip
+     */
+    public function searchIp(string $ip)
+    {
+        $untils = new Untils();
+        $exist = Ip::where('ip', $ip)->first();
+        if ($exist) {
+            return '该条地址已存在查询';
+        }
+        $result = $untils->searchIp($ip);
+        if ($result->ret === 200) {
+            $ip =  Ip::create([
+                'ip' => $result->data->ip,
+                'long_ip' => $result->data->long_ip,
+                'isp' => $result->data->isp,
+                'area' => $result->data->area,
+                'province_id' => $result->data->region_id,
+                'province' => $result->data->region,
+                'city_id' => $result->data->city_id,
+                'city' => $result->data->city,
+                'country_id' => $result->data->country_id,
+                'country' => $result->data->country,
+                'district' => $result->data->district || '',
+                'district_id' => $result->data->district_id || ''
+            ]);
+            if (!$ip) {
+                return '模型创建失败！';
+            }
+        }
+        return $ip;
     }
 }

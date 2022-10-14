@@ -18,8 +18,8 @@ use App\Http\Controllers\Api\UntilsController;
 */
 
 $api = app('Dingo\Api\Routing\Router');
-$api->version('v1',['namespace'=>''],function($api){
-    $api->post('/login',[AuthController::class,'login']);//登陆
-    $api->post('/search/express',[UntilsController::class,'searchExpress']); //查询快递
+$api->version('v1', ['namespace' => ''], function ($api) {
+    $api->post('/login', [AuthController::class, 'login']); //登陆
+    $api->post('/search/express', [UntilsController::class, 'searchExpress']); //查询快递
+    $api->get('/search/ip', [UntilsController::class, 'searchIp']); //查询ip
 });
-

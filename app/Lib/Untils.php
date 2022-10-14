@@ -65,4 +65,34 @@ class Untils
             }
         }
     }
+
+    public function searchIp(string $ip){
+        $host = "https://api01.aliyun.venuscn.com";
+        $path = "/ip";
+        $method = "GET";
+        $appcode = "0a577d45939c4b36a770b579e1d50a09";
+        $headers = array();
+        array_push($headers, "Authorization:APPCODE " . $appcode);
+        $querys = "ip=".$ip;
+        $bodys = "";
+        $url = $host . $path . "?" . $querys;
+    
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_FAILONERROR, false);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HEADER, true);
+        if (1 == strpos("$".$host, "https://"))
+        {
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        }
+        $out_put = curl_exec($curl);
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+        list($header, $body) = explode("\r\n\r\n", $out_put, 2);
+        return json_decode($body);
+    }
 }

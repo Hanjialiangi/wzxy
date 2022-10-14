@@ -31,4 +31,14 @@ class UntilsController extends Controller{
         }
         return $this->untilsRepository->searchExpress($expressNo,$type);
     }
+
+    //查询ip
+    public function searchIp(Request $request)
+    {
+        if(!$request->has('ip')){
+            return "请输入ip地址";
+        }
+        $ip = $request->input("ip");
+        return $this->untilsRepository->searchIp($ip);
+    }
 }
